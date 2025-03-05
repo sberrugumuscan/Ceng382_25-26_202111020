@@ -1,0 +1,183 @@
+<!DOCTYPE html>  
+<html lang="tr">  
+<head> 
+    <title>Solo Leveling Giriş</title> <!--sayfa ismi açılan kısımda-->
+    <meta charset="UTF-8">
+    
+    <style> 
+
+        body {   
+            position: relative;  /* relative, değerlere göre konumlanrıma için*/
+            height: 100vh; /* viewport height yani ekranın yüksekliği, sayfanın yüksekliği olsun  */
+            background-image: url('images/background-image.jpg'); /* Arka plan görseli */
+            background-size: cover; /* ekranın tamamını kaplasın */
+            background-position: center; /* görsel ortalansın */
+            color: white; 
+            font-family: 'TokyoNight', sans-serif; 
+            overflow: hidden; /* taşan içerikler gözükmesin diye */
+        }
+        @font-face {  /* font indirip kullanmaak için bu kısmı gptden aldım. */
+            font-family: 'TokyoNight';
+            src: url('font/TokyoNight.ttf') format('truetype'); 
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        .login {   /*giriş çerçevesi için ayarlar */
+            position: absolute;  /* login kısmını konumlanadrımak için */
+            left: 50%; /*giriş çerçevesi yatayda yüzde 50 sola yerleşsin,çerçevenin sol kenarı sayfanın tam ortasında */
+            bottom: 20px; /*  sayfanın alt kısmına 20 px uzaklıkta olsun*/
+            transform: translateX(-50%); /* çerçeveyi yatayda tam ortalamak için. left de sol kenardan yüzde 50 uzakken şimdi çerçeve kedni genişliğinin yarısı kadar sola kaydırılıyo ve ortalanmış oluyo bu ayarı gptden aldım*/
+            background-color: rgba(0, 0, 0, 0.8); /*arka plan siyah (0,0,0) ama %80 saydamdır (0.8) */
+            padding: 20px; /* çerçevenin etrafında 20 px boşluk */
+            border-radius: 10px; /*  köşeler hafif yuvarlak*/
+            text-align: center; /* içerikler ortalı */
+            opacity: 0;
+            animation: fadeIn 2s forwards; /* fadeIn animasyonu 2 sn boyunca uygulanasın sonra kalsın*/
+            border: 3px solid rgb(25, 25, 92); 
+        }
+
+        /* login çerçevesi görünmüyordu bunun için gpt ile animasyon ekledim yukarıdaki kısımdaki animation: satırı ile birlikte gptden */
+        @keyframes fadeIn {  /*ögenin opaklığını sıfrıdan bire ayarlicak*/
+            from {
+                opacity: 0; /*görünmez*/
+            }
+            to {
+                opacity: 1; /*ce e*/
+            }
+        } 
+
+        .login h1 { 
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .login input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;  /* üst ve alta*/
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+            font-family: 'TokyoNight', sans-serif;
+            box-sizing: border-box;
+        }
+
+        .login input::placeholder {  /* gptden aldım,yazı yazılan kısmın arka rengi için*/
+            color: #bbb;
+        }
+
+        .login button {
+            width: 75px; /* butonun genişliği */
+            height: 55px; /* butonun yüksekliği */
+            margin-top: 10px; /*üstten boşluk miktarı */
+            border-radius: 10px; /* köşeler*/
+            cursor: pointer;/*buton üzerinde fare işaretleyebilsin*/
+            background-image: url('images/button-image.jpg'); 
+            background-size: 100% 100%; /* görsel butonun tamamını kaplasın */
+            background-position: center;
+            background-repeat: no-repeat; /*görsel tekrar etmesin*/
+            text-indent: -9999px; /* butondaki metni gizler */
+            animation: buttonMove 2s ease-in-out infinite alternate; 
+        }
+
+        @keyframes buttonMove { /* sağa sola kayabilmesi için gpt ile nasıl animasyon ekleyebileceğime baktım*/
+            0% {
+                transform: translateX(0);  /*buton normal konumda*/
+            }
+            50% {
+                transform: translateX(15px); /*buton sağa kaydı*/
+            }
+            100% {
+                transform: translateX(0); /*buton  tekrar normal konumda*/
+            }
+        }
+
+        .login button:active { /*tıklama animasyonu hafif sağa */
+            animation: buttonSlide 0.4s ease-in-out; 
+        }
+        
+        @keyframes buttonSlide{
+            0% {
+                transform: translateX(0); 
+            }
+            100% {
+                transform: translateX(15px);
+            }
+        }
+        
+        .arrow {
+            position: absolute; /*sayfa üzerinde belirli bir konumda yerleşsin*/
+            left: 50%;  /*ok sayfanın yatay ortasında*/
+            top: 40%; /* ekranın üst kısmına yüzde 40 mesafede */
+            transform: translateX(-50%); /*ok kendi genişliğinin %50 si kadar sola*/
+            width: 5px;
+            height: 100px;
+            background-color: rgb(25, 25, 92); /* okunn rengi mavi */
+            border-radius: 5px; 
+            animation: arrowPosition 1s infinite alternate; /* animasyon 1 sn sonsuz tekrarda ileri geri*/
+        }
+
+        @keyframes arrowPosition { 
+            0% { 
+                opacity: 0.5; /*önce %50 opaklıkta*/
+                transform: translateX(-10px); /* konumu 10 px sola kayddı */
+            }
+            100% { 
+                opacity: 1; /* tamamen opak*/
+                transform: translateX(10px); /* 10 px sağa kaydı */
+            }
+        }
+
+        .arrow::after { /* üçgenleri nasık ekleyebileciğime dair gpt den yardım aldım*/
+            content: ""; /*sanal öge "pseduo ekement" oluşturdu içerik yok*/
+            position: absolute;
+            top: -10px; /* Ok ucunu kılıcın üstüne yerleştirmek için 15 piksel yukarı*/
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent; /* üçgenin kenarları sağ sol kenarlar şeffaf olsun  */
+            border-right: 10px solid transparent; 
+            border-bottom: 20px solid rgb(25, 25, 92); ; 
+        }
+
+        .gif-background {           /* ekranın tamamını kaplamıyordu onun için position,top-left,width-height ayarlarını gpt den aldım */
+            position: fixed;
+            top: 0; /*sayfanın sol üst köşesine yerleşitr*/
+            left: 0;
+            width: 100vw; /*genişilk %100*/
+            height: 100vh;
+            background-image: url('images/background-gif.gif'); 
+            background-size: cover; /*tamamına ölçeklensin*/
+            background-position: center; /*merkezlensin*/
+            display: none; /*başlangıçta gizli*/
+            animation: fadeIn 2s forwards; /* forwards animasyondan sonra son hal korsunusn*/
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login">
+        <h1>Solo Leveling Girişi</h1>
+        <input type="text" placeholder="Kullanıcı Adı"> <!--metin girişi oluşturmask için-->
+        <input type="password" placeholder="Şifre">
+        <button onclick="login()"></button> <!--fonksiyon çalıştırmak için,içi boş buton -->
+    </div>
+
+    <div class="arrow"></div> <!--css ok yerleştir-->
+
+    
+    <div class="gif-background"></div>  <!--gif arka plana yerleştirisn-->
+    
+    <script>
+        function login() {
+            
+            document.querySelector('.login').style.display = 'none'; /*login çerçevesi gizleme için*/
+            document.querySelector('.arrow').style.display = 'none';
+            document.querySelector('.gif-background').style.display = 'block'; /*gif gözüksün*/
+        }
+    </script>
+
+</body>
+</html>
