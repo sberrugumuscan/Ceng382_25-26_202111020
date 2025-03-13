@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Takım Bilgileri</title>
+    <style>
+        @font-face {
+            font-family: 'NightPumpkind';
+            src: url('font/NightPumpkind.otf') format('opentype');
+        }
+
+        body {
+            font-family: 'NightPumpkind', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #87a5ce;
+            color: rgb(0, 0, 0);
+            margin: 0;
+        }
+
+        form {
+            display: flex;
+            /* flexbox özelliği;ögeler hizalansın*/
+            flex-direction: column;
+            align-items: center;
+            /*yatayda ortala*/
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #87a5ce;
+            border-radius: 8px;
+            border: 1px solid #121215;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+        }
+
+        label {
+            /*input üstü*/
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        input,
+        textarea {
+            /* form alanındakiler için ayarlar*/
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            font-size: 18px;
+            font-family: 'NightPumpkind', sans-serif;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 12px;
+            width: 45%;
+            background-color: #61728a;
+            color: rgb(0, 0, 0);
+            font-size: 18px;
+            font-family: 'NightPumpkind', sans-serif;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            /* mouse ile üzerine gelince*/
+            background-color: #b8c6dc;
+        }
+
+        table {
+            width: 80%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            /* collapse --> hücre arası boşluk yok*/
+            /*separate --> aralarında boşluk olur*/
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            /*tablo başlık gücreleri,veri hücreleri*/
+            padding: 12px;
+            border: 1px solid #121215;
+            text-align: center;
+        }
+
+        th {
+            background-color: #87a5ce;
+            color: rgb(0, 0, 0);
+        }
+
+        tbody tr:hover {
+            /*tablo satırına mouse ile gelince*/
+            background-color: #b8c6dc;
+        }
+
+        #soruEkranı {
+            /*silelim mi düzenleyelim mi ekranı*/
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ffffff;
+            padding: 30px;
+            border: 1px solid #121111;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            font-size: 18px;
+
+        }
+
+        #soruEkranıButtons {
+            display: flex;
+            justify-content: space-between;
+            /*bitişikti sağa sola yaslanması için gptye sordum*/
+            margin-top: 10px;
+        }
+
+        #düzenlemeButonu,
+        #silmeButonu {
+            padding: 10px 20px;
+            /* yukarı-aşağı ve sağ-sol */
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>TAKIM BİLGİLERİ</h1>
+
+    <form id="classForm"> <!--tskım bilgileri girildi-->
+        <label for="className">TAKIM ADI</label>
+        <input type="text" id="className" required>
+
+        <label for="numPeople">ÜYE SAYISI</label>
+        <input type="number" id="numPeople" min="0" required>
+
+        <label for="description">AÇIKLAMA</label>
+        <textarea id="description" style="resize: none;"></textarea>
+
+        <button type="submit">EKLE</button>
+    </form>
+
+    <table id="classTable"> <!--liste için tablo-->
+        <thead> <!--başlılkar,sütunları tanımlar-->
+            <tr> <!--satır-->
+                <th>~~~</th>
+                <th>TAKIM ADI</th>
+                <th>ÜYE SAYISI</th>
+                <th>AÇIKLAMA</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        <!--(gpt den öğrenildi)tablo gövdesi.kulancı girdikçe dolacakmış, js ile dinamik olarak dolcak-->
+    </table>
+
+    <div id="soruEkranı">
+        <p>SEÇİLEN SATIRA HANGİ İŞLEM YAPILACAK?</p>
+        <div id="soruEkranıButtons">
+            <button id="düzenlemeButonu">Düzenle</button>
+            <button id="silmeButonu">Sil</button>
+        </div>
+    </div>
+
+    <script>
+        var classData = []; /*takım bilgilerini tutacak*/
+        var selectedRow = null; /*tıklanılan satırın referansını tutcak*/
+
+        
+        document.getElementById('numPeople').addEventListener('input', function () {
+            if (this.value < 0) {
+                this.value = 0; /* - li girerse 0 yapacak*/
+            }
+        });
+
+
+        document.getElementById('classForm').addEventListener('submit', function (event) {
+            event.preventDefault();  /*gpt den aldım ; ekle butonuna basınca sayfa yenilemesiningellicek */
+
+            var className = document.getElementById('className').value;
+            var numPeople = document.getElementById('numPeople').value;
+            var description = document.getElementById('description').value;
+
+            classData.push({ className: className, numPeople: numPeople, description: description }); //formdan alınanlar diziye atıldı//
+            updateTable();
+            this.reset(); //formu temizlicek//
+        });
+
+        function updateTable() {
+            var tableBody = document.querySelector('#classTable tbody'); /*tablo gövdesini alıyo*/
+            tableBody.innerHTML = '';/*önce tablo temizler*/
+
+            for (var i = 0; i < classData.length; i++) { /* bu kısmın yapısını oluştururken gptden yardım alarak oluşturdum  html yapısı ve row.addEventListener metotu yapısı için */
+                var data = classData[i];
+                var row = document.createElement('tr');
+
+                /*row adlı tr(tablosaırı) elementinin içine html kodu eklicek*/
+                /*${i + 1}        i dizideki sıra,+1 ekleyerek 1 den başlattık(diziler 0 dan başlar) */
+                /*classdata dakileri alıp td lerin içine yazacak,alt kısma veri ekleme şu sütuna şunu*/
+                row.innerHTML = `  
+                    <td>${i + 1}</td> 
+                    <td>${data.className}</td>
+                    <td>${data.numPeople}</td>
+                    <td>${data.description}</td>
+                `;
+
+                row.addEventListener('mouseover', function () { /*mouse ile üzerine gelindiğinde arka plan değişmesi için*/
+                    this.style.backgroundColor = '#b8c6dc';
+                });
+
+                row.addEventListener('mouseout', function () { /*mouse alandan çıkınca arka plan eski haline gelsin*/
+                    if (selectedRow !== this) this.style.backgroundColor = '';
+                });
+
+                row.addEventListener('click', function () { /*tek tıklamada önceden seçilen varssa onu sıfırla yeni satırı değiştir*/
+                    if (selectedRow) selectedRow.style.backgroundColor = '';
+                    selectedRow = this;
+                    this.style.backgroundColor = '#d4e0f0';
+                });
+
+                row.addEventListener('dblclick', function () { /*çift tıklamada fonksion çağrıcak*/
+                    var index = this.rowIndex - 1; /*mesela 4.takım ama aslında o 5te.değerleri 4 te tutuldu ama onun için -1*/
+                    showActionModal(index);
+                });
+
+                tableBody.appendChild(row); /*yeni oluşturulan satır tabloya eklencek*/
+            }
+        }
+
+        function showActionModal(index) { /*çift tıklamada gerçekleşecekler*/
+            var modal = document.getElementById('soruEkranı');
+            modal.style.display = 'block';
+
+            document.getElementById('düzenlemeButonu').onclick = function () {
+                var data = classData[index];
+                document.getElementById('className').value = data.className; /*formda gösterecek*/
+                document.getElementById('numPeople').value = data.numPeople;
+                document.getElementById('description').value = data.description;
+
+                classData.splice(index, 1); /*diziden seçilen satırı siler*/
+                updateTable();
+                modal.style.display = 'none';
+            };
+
+            document.getElementById('silmeButonu').onclick = function () {
+                classData.splice(index, 1);
+                updateTable();
+                modal.style.display = 'none';
+            };
+
+            window.onclick = function (event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        }
+    </script>
+</body>
+
+</html>

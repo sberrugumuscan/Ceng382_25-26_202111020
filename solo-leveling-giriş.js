@@ -6,10 +6,18 @@ function login() {
     let password = document.querySelector('.login input[type="password"]').value;
 
     
-    users.push({ username: username, password: password }); //arraya yeni kullanıcı objesi ekliyo "push"
+    // Varsayılan giriş bilgileri
+    if (username === 'admin' && password === 'admin') {
+        // Giriş başarılıysa table.html sayfasına yönlendir
+        window.location.href = 'table.html';
+    } else {
+        alert('Yanlış kullanıcı adı veya şifre!');
+    }
 
-    
-    console.log(users); //console da görebilmek için
+    // Giriş bilgilerini kaydetmek
+    users.push({ username: username, password: password });
+
+    console.log(users);
 
 
     document.querySelector('.login').style.display = 'none'; //.login sınıfına sahip öge seçildi görünürlük gizllendi
