@@ -1,0 +1,71 @@
+﻿@page
+@model IndexPage.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container">
+    <div class="row">
+        <!-- Form alanı (sol taraf) -->
+        <div class="col-md-6">
+            <h2>Add Class</h2>
+            <form method="post"> 
+                <div class="form-group">
+                    <label for="ClassName">Class Name</label>
+                    <input type="text" class="form-control" id="ClassName" name="NewClass.ClassName" value="@Model.NewClass?.ClassName" required /> 
+                    <!-- bu input alanın yapısı için gpt ye sordum-->
+                    <!-- class=form form-control --alan --alan bootstrap sınıfıymış.input alanını düzenlermiş-->
+                </div>
+
+                <div class="form-group">
+                    <label for="StudentCount">Student Count</label>
+                    <input type="number" class="form-control" id="StudentCount" name="NewClass.StudentCount" value="@Model.NewClass?.StudentCount" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="Description">Description</label>
+                    <textarea class="form-control" id="Description" name="NewClass.Description">@Model.NewClass?.Description</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" asp-page-handler="Add">Add Class</button>
+                <!-- buton yapısını gpt ye sordum-- -->
+            </form>
+        </div>
+
+     <!-- sağdaki table-bordered ayarları -->
+        <div class="col-md-6"> <!--alan genişliği belirtmek içinmiş gptye sordum-->
+            <h2>Classes</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Class Name</th>
+                        <th>Student Count</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in IndexModel.Classes)  
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.ClassName</td>
+                            <td>@item.StudentCount</td>
+                            <td>@item.Description</td>
+                            <td>
+                                <form method="post" asp-page-handler="Edit" asp-route-id="@item.Id">
+                                    <!-- belirli id ekle sahip dersin düenlenmesi için-->
+                                    <button type="submit" class="btn btn-warning">Edit</button>
+                                </form>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
