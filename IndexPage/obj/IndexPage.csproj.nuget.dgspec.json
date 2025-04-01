@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\sbgum\\Desktop\\Cneg 382- Web Development\\PROJELER\\week5\\IndexPage\\IndexPage.csproj": {}
+    "C:\\Users\\sbgum\\Ceng382_25-26_202111020\\IndexPage\\IndexPage.csproj": {}
   },
   "projects": {
-    "C:\\Users\\sbgum\\Desktop\\Cneg 382- Web Development\\PROJELER\\week5\\IndexPage\\IndexPage.csproj": {
+    "C:\\Users\\sbgum\\Ceng382_25-26_202111020\\IndexPage\\IndexPage.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\sbgum\\Desktop\\Cneg 382- Web Development\\PROJELER\\week5\\IndexPage\\IndexPage.csproj",
+        "projectUniqueName": "C:\\Users\\sbgum\\Ceng382_25-26_202111020\\IndexPage\\IndexPage.csproj",
         "projectName": "IndexPage",
-        "projectPath": "C:\\Users\\sbgum\\Desktop\\Cneg 382- Web Development\\PROJELER\\week5\\IndexPage\\IndexPage.csproj",
+        "projectPath": "C:\\Users\\sbgum\\Ceng382_25-26_202111020\\IndexPage\\IndexPage.csproj",
         "packagesPath": "C:\\Users\\sbgum\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\sbgum\\Desktop\\Cneg 382- Web Development\\PROJELER\\week5\\IndexPage\\obj\\",
+        "outputPath": "C:\\Users\\sbgum\\Ceng382_25-26_202111020\\IndexPage\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\sbgum\\AppData\\Roaming\\NuGet\\NuGet.Config"

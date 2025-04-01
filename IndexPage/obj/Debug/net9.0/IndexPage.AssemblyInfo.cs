@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IndexPage")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2bea1589ed686da692514da7858048159635e3fb")]
 [assembly: System.Reflection.AssemblyProductAttribute("IndexPage")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IndexPage")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

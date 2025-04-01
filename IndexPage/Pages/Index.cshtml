@@ -7,33 +7,40 @@
 <div class="container">
     <div class="row">
         <!-- Form alanı (sol taraf) -->
-        <div class="col-md-6">
+        <div class="col-md-5">
             <h2>Add Class</h2>
-            <form method="post"> 
+            <form method="post">
+                <input type="hidden" name="NewClass.Id" value="@Model.NewClass?.Id" />
+                <!-- gpt ye edit sırasında ıd yi saklama işlemi sorduğumda önerdi-->
+
                 <div class="form-group">
                     <label for="ClassName">Class Name</label>
-                    <input type="text" class="form-control" id="ClassName" name="NewClass.ClassName" value="@Model.NewClass?.ClassName" required /> 
+                    <input type="text" class="form-control" id="ClassName" name="NewClass.ClassName"
+                        value="@Model.NewClass?.ClassName" required />
                     <!-- bu input alanın yapısı için gpt ye sordum-->
                     <!-- class=form form-control --alan --alan bootstrap sınıfıymış.input alanını düzenlermiş-->
                 </div>
 
                 <div class="form-group">
                     <label for="StudentCount">Student Count</label>
-                    <input type="number" class="form-control" id="StudentCount" name="NewClass.StudentCount" value="@Model.NewClass?.StudentCount" required />
+                    <input type="number" class="form-control" id="StudentCount" name="NewClass.StudentCount"
+                        value="@Model.NewClass?.StudentCount" required />
                 </div>
 
                 <div class="form-group">
                     <label for="Description">Description</label>
-                    <textarea class="form-control" id="Description" name="NewClass.Description">@Model.NewClass?.Description</textarea>
+                    <textarea class="form-control" id="Description"
+                        name="NewClass.Description">@Model.NewClass?.Description</textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary" asp-page-handler="Add">Add Class</button>
+                <button type="submit" class="btn btn-primary" asp-page-handler="Add" style="margin-top: 35px;">Add
+                    Class</button>
                 <!-- buton yapısını gpt ye sordum-- -->
             </form>
         </div>
 
-     <!-- sağdaki table-bordered ayarları -->
-        <div class="col-md-6"> <!--alan genişliği belirtmek içinmiş gptye sordum-->
+        <!-- sağdaki table-bordered ayarları -->
+        <div class="col-md-7"> <!--alan genişliği belirtmek içinmiş gptye sordum-->
             <h2>Classes</h2>
             <table class="table table-bordered">
                 <thead>
@@ -46,7 +53,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in IndexModel.Classes)  
+                    @foreach (var item in IndexModel.Classes)
                     {
                         <tr>
                             <td>@item.Id</td>
@@ -54,13 +61,16 @@
                             <td>@item.StudentCount</td>
                             <td>@item.Description</td>
                             <td>
-                                <form method="post" asp-page-handler="Edit" asp-route-id="@item.Id">
-                                    <!-- belirli id ekle sahip dersin düenlenmesi için-->
-                                    <button type="submit" class="btn btn-warning">Edit</button>
-                                </form>
-                                <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
+                                <div class="d-flex gap-2"> <!--butonlar yapısını yana olsun diye-->
+
+                                    <form method="post" asp-page-handler="Edit" asp-route-id="@item.Id" class="w-50">
+                                        <!-- belirli id ekle sahip dersin düenlenmesi için-->
+                                        <button type="submit" class="btn btn-warning w-100">Edit</button>
+                                    </form>
+
+                                    <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id" class="w-50">
+                                        <button type="submit" class="btn btn-danger w-100">Delete</button>
+                                    </form>
                             </td>
                         </tr>
                     }
