@@ -1,0 +1,120 @@
+﻿@page
+@model IndexPage.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container">
+    <div class="row">
+        <!-- Form alanı (sol taraf) sınıf ekleme-->
+        <div class="col-md-5">
+            <h2>Add Class</h2>
+            <form method="post">
+                <input type="hidden" name="NewClass.Id" value="@Model.NewClass?.Id" />
+                <!-- gpt ye edit sırasında ıd yi saklama işlemi sorduğumda önerdi-->
+                <!-- hidden input,--alan class edit işlemi sırasında ıd saklasın diye-->
+
+                <div class="form-group">
+                    <label for="ClassName">Class Name</label>
+                    <input type="text" class="form-control" id="ClassName" name="NewClass.ClassName"
+                        value="@Model.NewClass?.ClassName" required />
+                    <!-- bu input alanın yapısı için gpt ye sordum-->
+                    <!-- class=form form-control --alan --alan bootstrap sınıfıymış.input alanını düzenlermiş-->
+                </div>
+
+                <div class="form-group">
+                    <label for="StudentCount">Student Count</label>
+                    <input type="number" class="form-control" id="StudentCount" name="NewClass.StudentCount"
+                        value="@Model.NewClass?.StudentCount" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="Description">Description</label>
+                    <textarea class="form-control" id="Description"
+                        name="NewClass.Description">@Model.NewClass?.Description</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" asp-page-handler="Add" style="margin-top: 35px;">Add
+                    <!--asp-page-handler=add :::  form gönderildiğinde onpostadd metodu çalışcak(sınıf ekle,güncelle)-->
+                    Class</button>
+                    <!-- buton yapısını gpt ye sordum-- -->
+            </form>
+        </div>
+
+        <!-- Filtreleme kısmı -->
+        <div class="col-md-5">
+            <h2>Filters</h2>
+            <form method="get">
+                <div class="form-group">
+                    <label for="ClassNameFilter">Class Name Filter</label>
+                    <input type="text" class="form-control" id="ClassNameFilter" name="classNameFilter"
+                        value="@Model.ClassNameFilter" />
+                </div>
+                <div class="form-group">
+                    <label for="StudentCountFilter">Student Count Filter</label>
+                    <input type="number" class="form-control" id="StudentCountFilter" name="studentCountFilter"
+                        value="@Model.StudentCountFilter" />
+                </div>
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+            </form>
+        </div>
+
+        <!-- Sınıf listesi ve sayfalama -->
+        <div class="col-md-12 mt-4"> <!-- alan genişliği -->
+            <h2>Classes</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Class Name</th>
+                        <th>Student Count</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--döngü,filtrelenmiş ve sayfalanmış sınıf listesini görüntülicek-->
+                    @foreach (var item in Model.FilteredPagedClasses) 
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.ClassName</td>
+                            <td>@item.StudentCount</td>
+                            <td>@item.Description</td>
+                            <td>
+                                <div class="d-flex gap-2"><!--butonlar yapısını yana olsun diye-->
+                                    <form method="post" asp-page-handler="Edit" asp-route-id="@item.Id" class="w-50">
+                                        <!-- düzenleme işlemi için her sınıf için form sağlancak , asp-route-id ile sınıfın id si göderilcek-->
+                                        <button type="submit" class="btn btn-warning w-100">Edit</button>
+                                    </form>
+
+                                    <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id" class="w-50">
+                                        <button type="submit" class="btn btn-danger w-100">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+            <!--sayfalama paginaiton-->
+            <nav aria-label="Sayfalama" class="mt-3">
+                <ul class="pagination justify-content-center">
+                    <!--sayfalama numaralarını oluşturacak -->
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {   <!--kullanıcı hangi sayfaya gitmek istiyorsa,o sayfanın numarası URL ye eklenecek -->
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">  <!--mevcut sayfa active sınıfıyla işaretlncek vrugulanabilcek  -->
+                            <a class="page-link" asp-page="./Index" asp-route-pageNumber="@i"
+                                asp-route-classNameFilter="@Model.ClassNameFilter"
+                                asp-route-studentCountFilter="@Model.StudentCountFilter">
+                                @i
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
