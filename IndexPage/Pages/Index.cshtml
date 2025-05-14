@@ -1,0 +1,208 @@
+﻿@page
+@model IndexPage.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
+<style>
+    tr.selected-row td {
+        background-color: #b6b6b6ca !important;
+        color: rgb(12, 11, 11);
+    }
+
+    .select-column {
+        width: 40px;
+    }
+
+    .export-btn-container {
+        margin: 20px 0;
+        text-align: right;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <h2>Add Class</h2>
+            <form method="post">
+                <input type="hidden" name="NewClass.Id" value="@Model.NewClass?.Id" />
+
+                <div class="form-group">
+                    <label for="ClassName">Class Name</label>
+                    <input type="text" class="form-control" id="ClassName" name="NewClass.ClassName"
+                        value="@Model.NewClass?.ClassName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="StudentCount">Student Count</label>
+                    <input type="number" class="form-control" id="StudentCount" name="NewClass.StudentCount"
+                        value="@Model.NewClass?.StudentCount" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="Description">Description</label>
+                    <textarea class="form-control" id="Description"
+                        name="NewClass.Description">@Model.NewClass?.Description</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3" asp-page-handler="Add">Add Class</button>
+            </form>
+        </div>
+
+        <div class="col-md-5">
+            <h2>Filters</h2>
+            <form method="get">
+    <div class="form-group">
+        <label for="ClassNameFilter">Class Name Filter</label>
+        <input type="text" class="form-control" id="ClassNameFilter" name="classNameFilter"
+            value="@Model.ClassNameFilter" />
+    </div>
+    <div class="form-group">
+        <label for="StudentCountFilter">Student Count Filter</label>
+        <input type="number" class="form-control" id="StudentCountFilter" name="studentCountFilter"
+            value="@Model.StudentCountFilter" />
+    </div>
+    <input type="hidden" name="pageNumber" value="@Model.CurrentPage" />
+    <button type="submit" class="btn btn-primary">Apply Filters</button>
+</form>
+
+        </div>
+
+        <div class="col-md-12 mt-4">
+            <h2>Classes</h2>
+
+            <div class="export-btn-container">
+                <button class="btn btn-success" onclick="exportData()">Export Data</button>
+            </div>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="select-column"><input type="checkbox" id="selectAll" /></th>
+                        <th>Class Name</th>
+                        <th>Student Count</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.FilteredPagedClasses)
+                    {
+                        <tr>
+                            <td><input type="checkbox" class="row-checkbox" value="@item.Id" /></td>
+                            <td>@item.ClassName</td>
+                            <td>@item.StudentCount</td>
+                            <td>@item.Description</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <form method="post" asp-page-handler="Edit" asp-route-id="@item.Id" class="w-50">
+                                        <button type="submit" class="btn btn-warning w-100">Edit</button>
+                                    </form>
+                                    <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id" class="w-50">
+                                        <button type="submit" class="btn btn-danger w-100">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link" asp-page="./Index" asp-route-pageNumber="@i"
+                                asp-route-classNameFilter="@Model.ClassNameFilter"
+                                asp-route-studentCountFilter="@Model.StudentCountFilter">@i</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+<input name="__RequestVerificationToken" type="hidden" value="@Antiforgery.GetTokens(HttpContext).RequestToken"
+    id="csrf-token" />
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('selectAll')?.addEventListener('change', function () {
+            const isChecked = this.checked;
+            document.querySelectorAll('.row-checkbox').forEach(cb => {
+                cb.checked = isChecked;
+                const row = cb.closest('tr');
+                if (isChecked) {
+                    row.classList.add('selected-row');
+                } else {
+                    row.classList.remove('selected-row');
+                }
+            });
+        });
+
+        document.querySelectorAll('.row-checkbox').forEach(cb => {
+            cb.addEventListener('change', function () {
+                const row = this.closest('tr');
+                if (this.checked) {
+                    row.classList.add('selected-row');
+                } else {
+                    row.classList.remove('selected-row');
+                }
+            });
+        });
+    });
+
+    function updateRowHighlighting() {
+        document.querySelectorAll('.row-checkbox').forEach(cb => {
+            const row = cb.closest('tr');
+            if (cb.checked) {
+                row.classList.add('selected-row');
+            } else {
+                row.classList.remove('selected-row');
+            }
+        });
+    }
+
+    async function exportData() {
+        try {
+            const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked'))
+                .map(cb => cb.value);
+
+            const payload = {
+                selectedIds: selectedIds,
+                currentPage: @Model.CurrentPage,
+                classNameFilter: "@Model.ClassNameFilter",
+                studentCountFilter: @(Model.StudentCountFilter.HasValue? Model.StudentCountFilter.Value : "null")
+        };
+
+            const response = await fetch('/Index?handler=Export', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.getElementById('csrf-token').value
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `classes_${new Date().toISOString()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error('Export failed:', error);
+            alert('Export failed: ' + error.message);
+        }
+    }
+
+</script>
